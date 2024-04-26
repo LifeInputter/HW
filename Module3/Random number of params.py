@@ -11,7 +11,7 @@ test_params(1, 2, 3, 4, Marina='- офис-менеджер', Irina='- мене�
 
 
 def factorial(n):  # функция рекурсии с факториалом
-    if n == 1:
+    if n == 1 or n == 0:
         return 1
     else:
         return factorial(n - 1) * n
