@@ -9,27 +9,30 @@
 # "Составное" в противном случае.
 
 
-def is_prime(func):
-    def wrapper():
-        n= func
-        # original_res = n
-        # wrapped_res =
-        if n == 1:
-            return False
-        for i in range(2, n):
-            if n % i == 0:
-                return False
+def is_prime(*args):
+    def dec(num1, num2, num3):
+        num = int(num1 + num2 + num3)
 
-        return True #("Простое")
-    return wrapper()
+        def wrapper():
+            if num == 0:
+                return "Не является ни простым, ни составным числом"
+            if num == 1:
+                return "Не является ни простым, ни составным числом"
+            for i in range(2, num):
+                if num % i == 0:
+                    return "Составное"
+            return "Простое"
 
-print(is_prime(1))
-#
-#
-@is_prime          # если отключить декоратор, то по-отдельности все работвет.
+        print(f'{wrapper()}\n{num}')
+
+    return dec
+
+
+@is_prime
 def summ_three(a, b, c):
-    summ = a+b+c
-    return summ
+    x = a + b + c
+    return x
 
-result = summ_three(2,3,6)
-print(int(summ_three(2,3,6)))
+
+result = summ_three(2, 3, 6)
+print(result)
