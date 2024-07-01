@@ -37,7 +37,6 @@ import threading
 import time
 from threading import Thread
 
-
 class Table(Thread):
     def __init__(self, number, is_busy=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
