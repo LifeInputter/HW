@@ -1,6 +1,6 @@
-
 '''''
-Класс Tournament представляет собой класс соревнований, где есть дистанция, которую нужно пробежать и список участников. Также присутствует метод start, который реализует логику бега по предложенной дистанции.
+Класс Tournament представляет собой класс соревнований, где есть дистанция, которую нужно пробежать и список участников.
+ Также присутствует метод start, который реализует логику бега по предложенной дистанции.
 
 Напишите класс TournamentTest, наследованный от TestCase. В нём реализуйте следующие методы:
 
@@ -11,7 +11,9 @@ setUp - метод, где создаются 3 объекта:
 Бегун по имени Ник, со скоростью 3.
 tearDownClass - метод, где выводятся all_results по очереди в столбец.
 
-Так же методы тестирования забегов, в которых создаётся объект Tournament на дистанцию 90. У объекта класса Tournament запускается метод start, который возвращает словарь в переменную results. В конце вызывается метод assertTrue, в котором сравниваются последний объект из result и предполагаемое имя последнего бегуна (индекс -1).
+Так же методы тестирования забегов, в которых создаётся объект Tournament на дистанцию 90. У объекта класса Tournament 
+запускается метод start, который возвращает словарь в переменную results. В конце вызывается метод assertTrue, в котором 
+сравниваются последний объект из result и предполагаемое имя последнего бегуна (индекс -1).
 Напишите 3 таких метода, где в забегах участвуют (порядок передачи в объект Tournament соблюсти):
 Усэйн и Ник
 Андрей и Ник
@@ -63,32 +65,44 @@ class Tournament:
         return finishers
 
 
-    class TournamentTest(unittest.TestCase):
+class TournamentTest(unittest.TestCase):
+    # метод, где создаётся атрибут класса all_results. Это словарь в который будут сохраняться результаты всех тестов.
+    # all_results = None
+    @classmethod
+    def setUpClass(cls):
+        cls.all_results = {}
 
-        # метод, где создаётся атрибут класса all_results. Это словарь в который будут сохраняться результаты всех тестов.
-        @classmethod
-        def setUpClass(cls):
-            all_results ={}
+    def setUp(self):  # метод, где создаются 3 объекта бегуноа
+        self.hussein = Runner("Уссейн", 10)
+        self.andrey = Runner("Андрей", speed=9)
+        self.nick = Runner('Ник', 3)
 
-        def setUp(self):                                    # метод, где создаются 3 объекта бегуноа
-            self.hussein = Runner("Уссейн", speed=10)
-            self.andrey = Runner("Андрей",   speed=9)
-            self.nick = Runner('Ник', speed=3)
+    @classmethod  # метод, где выводятся all_results по очереди в столбец
+    def tearDownClass(cls):
+        print(cls.all_results[0])
+        print(cls.all_results[1])
+        print(cls.all_results[2])
+        # for key, value in cls.all_results:
+        #     print(value)
+
+    def test_1(self):
+        attempt = Tournament(90, self.hussein, self.nick)
+        results = attempt.start()
+        self.assertTrue(results[len(results)] == 'Ник')
+        self.all_results[0] = results
+
+    def test_2(self):
+        attempt = Tournament(90, self.andrey, self.nick)
+        results = attempt.start()
+        self.assertTrue(results[len(results)] == 'Ник')
+        self.all_results[1] = results
+
+    def test_3(self):
+        attempt = Tournament(90, self.hussein, self.andrey, self.nick)
+        results = attempt.start()
+        self.assertTrue(results[len(results)] == 'Ник')
+        self.all_results[2] = results
 
 
-
-        @classmethod                # метод, где выводятся all_results по очереди в столбец
-        def tearDownClass(cls):
-            print()
-
-        def run(self, result = None):
-            runners = [self.hussein, self.andrey, self.nick]
-            for runner in runners:
-                runner.run()
-                attempt.start()
-                print(result)
-
-
-
-attempt = Tournament(distance=90)
-
+if __name__ == '__main__':
+    unittest.main()
