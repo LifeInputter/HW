@@ -22,7 +22,7 @@ async def start_message(message):
 @dp.message_handler()  # этот хэндлер перехватывает абсолютно все сообщения
 async def all_message(message):
     print("Введите команду /start, чтобы начать общение")
-    await message.answer("Введите команду /start, чтобы начать общение")
+    await message.answer("Введите команду /start, чтобы начать общение")  #отправка ответа в чат телеграмм
 
 
 if __name__ == "__main__":
