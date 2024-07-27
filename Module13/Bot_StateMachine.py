@@ -1,52 +1,71 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher import FSMContext
 import asyncio
 
 api = ""
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
+kb = ReplyKeyboardMarkup(resize_keyboard=True)
+button = KeyboardButton(text='Информация')
+button2 = KeyboardButton(text="Рассчитать")
+kb.add(button)
+kb.add(button2)
+
 
 class UserState(StatesGroup):
     age = State()
     height = State()
     weight = State()
 
+
 @dp.message_handler(commands=['start'])  # этот хэндлер реагирует на команду старт
 async def start_message(message):
     print('Привет! Я бот, помогающий твоему здоровью.')
-    await message.answer('Привет! Я бот, помогающий твоему здоровью.')
+    await message.answer('Привет! Я бот, помогающий твоему здоровью.', reply_markup=kb)
 
-@dp.message_handler(text = ["Calories", "calories"])    #message_handler, который реагирует на текстовое сообщение 'Calories'
-async def set_age(message):             #Эта функция должна выводить в Telegram-бот сообщение 'Введите свой возраст:
-    await message.answer("Введите свой возраст")
+
+@dp.message_handler(text="Информация")
+async def info(message):
+    await message.answer("Если ты думаешь о правильном питании, я помогу определить тебе норму калорий")
+
+
+@dp.message_handler(
+    text="Рассчитать")  # message_handler, который реагирует на текстовое сообщение / кнопку 'Рассчитать'
+async def set_age(message):  # Эта функция должна выводить в Telegram-бот сообщение 'Введите свой возраст:
+    await message.answer("Введи свой возраст", reply_markup=kb)
     await UserState.age.set()
 
-@dp.message_handler(state=UserState.age)         #Эта функция должна обновлять данные в состоянии age на message.text
-async def set_height(message, state):            #(написанное пользователем сообщение). Используйте метод update_data.
-    await state.update_data(ag = message.text)
-    await message.answer("Введите свой рост")
+
+@dp.message_handler(state=UserState.age)  # Эта функция должна обновлять данные в состоянии age на message.text
+async def set_height(message, state):  # (написанное пользователем сообщение). Используйте метод update_data.
+    await state.update_data(ag=message.text)
+    await message.answer("Введи свой рост")
     await UserState.height.set()
 
-@dp.message_handler(state=UserState.height)    #hadler  реагирует на переданное состояние UserState.height
-async def set_weight(message, state):      #эта ф-я обновляет данные в состоянии height на message.text от пользователя
+
+@dp.message_handler(state=UserState.height)  # hadler  реагирует на переданное состояние UserState.height
+async def set_weight(message, state):  # эта ф-я обновляет данные в состоянии height на message.text от пользователя
     await state.update_data(hei=message.text)
-    await message.answer("Введите свой вес")
+    await message.answer("Введи свой вес")
     await UserState.weight.set()
+
 
 @dp.message_handler(state=UserState.weight)
 async def send_calories(message, state):
     await state.update_data(wei=message.text)
     data = await state.get_data()
     calories = 10 * float(data['wei']) + 6.25 * float(data['hei']) - 5 * float(data['ag']) + 5
-    await message.answer(f'Ваша норма калорий по формуле Миффлина - Сан Жеора: {calories}')
+    await message.answer(f'Твоя норма калорий по формуле Миффлина - Сан Жеора: {calories}')
 
     await state.finish()
 
+
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
-
 
 '''
 Задача "Цепочка вопросов":
