@@ -43,5 +43,26 @@ for user in users:
     username, email, age, balance = user
     print(f'Имя: {username} | Почта: {email} | Возраст: {age} | Баланс: {balance}')
 
+
+#Удалите из базы данных not_telegram.db запись с id = 6
+cursor.execute("DELETE FROM Users WHERE id=?",(6,))
+
+#Подсчитать общее количество записей
+cursor.execute("SELECT COUNT (*) FROM Users")
+total = cursor.fetchone()[0]
+# print(total)
+
+#Посчитать сумму всех балансов.
+cursor.execute("SELECT SUM(balance) FROM Users")
+total_balance = cursor.fetchone()[0]
+# print(total_balance)
+print(total_balance/total)  #вариант1
+
+#Вывести в консоль средний баланс всех пользователя
+cursor.execute("SELECT AVG(balance) FROM Users")
+avg_balance = cursor.fetchone()[0]
+print(avg_balance)                #вариант2
+
+
 connection.commit()  # позоляет сохранить состояние
 connection.close()  #закрытие
