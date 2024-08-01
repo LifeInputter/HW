@@ -3,13 +3,11 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 start_kb = ReplyKeyboardMarkup(
     keyboard=[
-        [
-            KeyboardButton(text="Информация"),
-            KeyboardButton(text="Рассчитать"),
-            KeyboardButton(text="Купить")
-
-        ]
-    ], resize_keyboard=True
+        [KeyboardButton(text="Информация"),
+         KeyboardButton(text="Рассчитать")
+        ],
+        [KeyboardButton(text="Купить")]
+        ], resize_keyboard=True
 )
 
 catalog_kb = InlineKeyboardMarkup(

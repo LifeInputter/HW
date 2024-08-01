@@ -10,7 +10,7 @@ import config_texts
 from config_texts import *
 from kb import *
 
-api = ""
+api = config_texts.API
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
