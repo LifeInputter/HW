@@ -28,7 +28,6 @@ class UserState(StatesGroup):
     height = State()
     weight = State()
 
-
 #
 @dp.message_handler(text="Рассчитать")
 async def main_menu(message):
