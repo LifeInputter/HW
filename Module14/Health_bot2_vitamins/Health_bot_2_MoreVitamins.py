@@ -9,6 +9,8 @@ import asyncio
 import config_texts
 from config_texts import *
 from kb import *
+import crud_functions
+from crud_functions import *
 
 api = config_texts.API
 bot = Bot(token=api)
@@ -19,15 +21,6 @@ button = InlineKeyboardButton(text='Рассчитать норму калори
 button2 = InlineKeyboardButton(text="Формулы расчета", callback_data='formulas')
 kb.add(button)
 kb.add(button2)
-
-
-# start_kb = ReplyKeyboardMarkup(resize_keyboard=True)
-# start_button = KeyboardButton(text='Информация')
-# start_button2 = KeyboardButton(text="Рассчитать")
-# buy_button = KeyboardButton(text="Купить")
-# start_kb.add(start_button)
-# start_kb.add(start_button2)
-# start_kb.add(buy_button)
 
 
 class UserState(StatesGroup):
@@ -55,21 +48,16 @@ async def info(message):
 
 @dp.message_handler(text="Купить")
 async def get_buying_list(message):
-    await message.answer(config_texts.product1)
-    with open('files/C_vit.jpg', 'rb') as img1:
-        await message.answer_photo(img1)
-    await message.answer(config_texts.product2)
-    with open("files/B_vit.jpg", "rb") as img2:
-        await message.answer_photo(img2)
-    await message.answer(config_texts.product3)
-    with open("files/A_vit.jpg", 'rb') as img3:
-        await message.answer_photo(img3)
-    await message.answer(config_texts.product4)
-    with open("files/E_vit.jpg", 'rb') as img4:
-        await message.answer_photo(img4)
-
+    images = ['files/C_vit.jpg', 'files/B_vit.jpg', 'files/A_vit.jpg', 'files/E_vit.jpg']
+    descriptions = [config_texts.product1, config_texts.product2, config_texts.product3, config_texts.product4]
+    # for i in  range(len(images)):
+    #     with open(images[i], 'rb') as img:
+    #         await message.answer_photo(img,descriptions[i])
+    products = crud_functions.get_all_products()
+    for i, item in enumerate(products):
+        with open(images[i], 'rb') as img:
+            await message.answer_photo(img, f'Название: {item[1]}\nОписание: {item[2]}\nЦена: {item[3]}$')
     await message.answer(text='Выберите продукт для покупки', reply_markup=catalog_kb)
-
 
 @dp.callback_query_handler(text='product_buying')
 async def send_confirm_message(call):
@@ -117,6 +105,17 @@ async def send_calories(message, state):
 
 
 if __name__ == "__main__":
+    initiate_db()
+    connection = sqlite3.connect('prod.db')
+    cursor = connection.cursor()
+    cursor.execute('INSERT INTO Products (title, description, price) VALUES ("Product1", "Описание: витамин C", 100)')
+    cursor.execute('INSERT INTO Products (title, description, price) VALUES ("Product2", "Описание: витамин B", 200)')
+    cursor.execute('INSERT INTO Products (title, description, price) VALUES ("Product3", "Описание: витамин A", 300)')
+    cursor.execute('INSERT INTO Products (title, description, price) VALUES ("Product4", "Описание: витамин E", 400)')
+
+    connection.commit()
+    connection.close()
+
     executor.start_polling(dp, skip_updates=True)
 
 '''
