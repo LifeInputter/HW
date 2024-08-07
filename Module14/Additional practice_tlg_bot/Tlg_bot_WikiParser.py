@@ -21,7 +21,7 @@ button1 = InlineKeyboardButton(text='Да, +100 единиц тебе в кар�
 button2 = InlineKeyboardButton(text="Нет, пойду спрошу у яндекса", url="https://ya.ru")
 kb.add(button1)
 kb.add(button2)
-db_log.init_db(force=True) # True - пересоздает БД кадый раз False - последовательно добавляет все записи
+db_log.init_db(force=True) # True - пересоздает БД каждый раз False - последовательно добавляет все записи
 
 
 @dp.message_handler(commands=['start'])
