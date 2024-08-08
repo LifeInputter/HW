@@ -21,7 +21,7 @@ def get_all_products():
     cursor.execute("SELECT * FROM Products")
     products = cursor.fetchall()
     connection.commit()
-    connection.close()
+    # connection.close()
     return products
 
 

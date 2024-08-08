@@ -28,6 +28,7 @@ class UserState(StatesGroup):
     height = State()
     weight = State()
 
+
 #
 @dp.message_handler(text="Рассчитать")
 async def main_menu(message):
@@ -47,16 +48,13 @@ async def info(message):
 
 @dp.message_handler(text="Купить")
 async def get_buying_list(message):
-    images = ['files/C_vit.jpg', 'files/B_vit.jpg', 'files/A_vit.jpg', 'files/E_vit.jpg']
-    descriptions = [config_texts.product1, config_texts.product2, config_texts.product3, config_texts.product4]
-    # for i in  range(len(images)):
-    #     with open(images[i], 'rb') as img:
-    #         await message.answer_photo(img,descriptions[i])
-    products = crud_functions.get_all_products()
-    for i, item in enumerate(products):
-        with open(images[i], 'rb') as img:
-            await message.answer_photo(img, f'Название: {item[1]}\nОписание: {item[2]}\nЦена: {item[3]}$')
+    for number in range(1,5):
+        await message.answer(f'Название: Product{number}| Описание: описание{number} | Цена: {number*100}$')
+    # for i, item in enumerate(products):
+        with open(f'files/img_{number+10}.jpg', 'rb') as photo:
+            await message.answer_photo(photo) #, f'Название: {item[1]}\nОписание: {item[2]}\nЦена: {item[3]}$'
     await message.answer(text='Выберите продукт для покупки', reply_markup=catalog_kb)
+
 
 @dp.callback_query_handler(text='product_buying')
 async def send_confirm_message(call):
