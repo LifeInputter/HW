@@ -1,3 +1,5 @@
+import sqlite3
+
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -29,7 +31,49 @@ class UserState(StatesGroup):
     weight = State()
 
 
+class RegistrationState(StatesGroup):
+    username = State()
+    email = State()
+    age = State()
+    balance = State()
+
+
 #
+@dp.message_handler(text='Регистрация')
+async def sign_up(message):
+    await message.answer("Введи имя пользователя (только латинский алфавит)")
+    await RegistrationState.username.set()
+
+
+@dp.message_handler(state=RegistrationState.username)
+async def set_username(message, state):
+    await state.update_data(username=message.text)
+    # await message.answer("Введите погоняло пользователя (только латинский алфавит)")
+    if is_included(message.text):
+        await message.answer("Пользователь существует, введи другое имя")
+        await RegistrationState.username.set()
+    else:
+        await message.answer("Введи свой email")
+        await RegistrationState.email.set()
+
+
+@dp.message_handler(state=RegistrationState.email)
+async def set_email(message, state):
+    await state.update_data(email=message.text)
+    await message.answer("Введи свой возраст")
+    await RegistrationState.age.set()
+
+
+@dp.message_handler(state=RegistrationState.age)
+async def set_age(message, state):
+    await state.update_data(age=message.text)
+    await message.answer('Поздраляем, ты успешно прошел регистрацию')
+    dt = await state.get_data()
+    crud_functions.add_user(dt['username'], dt['email'], dt['age'])
+
+    await state.finish()
+
+
 @dp.message_handler(text="Рассчитать")
 async def main_menu(message):
     await message.answer("Выбери опцию", reply_markup=kb)
@@ -48,11 +92,11 @@ async def info(message):
 
 @dp.message_handler(text="Купить")
 async def get_buying_list(message):
-    for number in range(1,5):
-        await message.answer(f'Название: Product{number}| Описание: описание{number} | Цена: {number*100}$')
-    # for i, item in enumerate(products):
-        with open(f'files/img_{number+10}.jpg', 'rb') as photo:
-            await message.answer_photo(photo) #, f'Название: {item[1]}\nОписание: {item[2]}\nЦена: {item[3]}$'
+    for number in range(1, 5):
+        await message.answer(f'Название: Product{number}| Описание: описание{number} | Цена: {number * 100}$')
+        # for i, item in enumerate(products):
+        with open(f'files/img_{number + 10}.jpg', 'rb') as photo:
+            await message.answer_photo(photo)  # , f'Название: {item[1]}\nОписание: {item[2]}\nЦена: {item[3]}$'
     await message.answer(text='Выберите продукт для покупки', reply_markup=catalog_kb)
 
 
@@ -84,7 +128,7 @@ async def set_height(message, state):  # (написанное пользова�
     await UserState.height.set()
 
 
-@dp.message_handler(state=UserState.height)  # hadler  реагирует на переданное состояние UserState.height
+@dp.message_handler(state=UserState.height)  # handler  реагирует на переданное состояние UserState.height
 async def set_weight(message, state):  # эта ф-я обновляет данные в состоянии height на message.text от пользователя
     await state.update_data(hei=message.text)
     await message.answer("Введи свой вес")
@@ -102,7 +146,7 @@ async def send_calories(message, state):
 
 
 if __name__ == "__main__":
-    initiate_db()
+    crud_functions.initiate_db()
     connection = sqlite3.connect('prod.db')
     cursor = connection.cursor()
     cursor.execute('INSERT INTO Products (title, description, price) VALUES ("Product1", "Описание: витамин C", 100)')
@@ -138,4 +182,48 @@ if __name__ == "__main__":
 В ответ на кнопку 'Рассчитать' присылается Inline меню: 'Рассчитать норму калорий' и 'Формулы расчёта'
 По Inline кнопке 'Формулы расчёта' присылается сообщение с формулой.
 По Inline кнопке 'Рассчитать норму калорий' начинает работать машина состояний по цепочке.
+
+
+
+------
+
+
+Задача "Регистрация покупателей":
+Подготовка:
+Для решения этой задачи вам понадобится код из предыдущей задачи. Дополните его, следуя пунктам задачи ниже.
+
+Дополните файл crud_functions.py, написав и дополнив в нём следующие функции:
+initiate_db дополните созданием таблицы Users, если она ещё не создана при помощи SQL запроса. Эта таблица должна содержать следующие поля:
+id - целое число, первичный ключ
+username - текст (не пустой)
+email - текст (не пустой)
+age - целое число (не пустой)
+balance - целое число (не пустой)
+add_user(username, email, age), которая принимает: имя пользователя, почту и возраст. Данная функция должна добавлять в таблицу Users вашей БД запись с переданными данными. Баланс у новых пользователей всегда равен 1000. Для добавления записей в таблице используйте SQL запрос.
+is_included(username) принимает имя пользователя и возвращает True, если такой пользователь есть в таблице Users, в противном случае False. Для получения записей используйте SQL запрос.
+
+Изменения в Telegram-бот:
+Кнопки главного меню дополните кнопкой "Регистрация".
+Напишите новый класс состояний RegistrationState с следующими объектами класса State: username, email, age, balance(по умолчанию 1000).
+Создайте цепочку изменений состояний RegistrationState.
+Фукнции цепочки состояний RegistrationState:
+sing_up(message):
+Оберните её в message_handler, который реагирует на текстовое сообщение 'Регистрация'.
+Эта функция должна выводить в Telegram-бот сообщение "Введите имя пользователя (только латинский алфавит):".
+После ожидать ввода возраста в атрибут RegistrationState.username при помощи метода set.
+set_username(message, state):
+Оберните её в message_handler, который реагирует на состояние RegistrationState.username.
+Функция должна выводить в Telegram-бот сообщение "Введите имя пользователя (только латинский алфавит):".
+Если пользователя message.text ещё нет в таблице, то должны обновляться данные в состоянии username на message.text. Далее выводится сообщение "Введите свой email:" и принимается новое состояние RegistrationState.email.
+Если пользователь с таким message.text есть в таблице, то выводить "Пользователь существует, введите другое имя" и запрашивать новое состояние для RegistrationState.username.
+set_email(message, state):
+Оберните её в message_handler, который реагирует на состояние RegistrationState.email.
+Эта функция должна обновляться данные в состоянии RegistrationState.email на message.text.
+Далее выводить сообщение "Введите свой возраст:":
+После ожидать ввода возраста в атрибут RegistrationState.age.
+set_age(message, state):
+Оберните её в message_handler, который реагирует на состояние RegistrationState.age.
+Эта функция должна обновляться данные в состоянии RegistrationState.age на message.text.
+Далее брать все данные (username, email и age) из состояния и записывать в таблицу Users при помощи ранее написанной crud-функции add_user.
+В конце завершать приём состояний при помощи метода finish().
 '''

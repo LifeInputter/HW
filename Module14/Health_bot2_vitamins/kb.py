@@ -6,7 +6,9 @@ start_kb = ReplyKeyboardMarkup(
         [KeyboardButton(text="Информация"),
          KeyboardButton(text="Рассчитать")
         ],
-        [KeyboardButton(text="Купить")]
+        [KeyboardButton(text="Регистрация"),
+         KeyboardButton(text='Купить')
+         ]
         ], resize_keyboard=True
 )
 
