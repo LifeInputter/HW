@@ -38,7 +38,7 @@ async def get_admin_page() -> dict:
 
 
 @app.get("/user/{user_id}")
-async def user_path(user_id: int = Path(ge=1, le=100, description="Enter User ID", example="10")) -> dict:
+async def user_path(user_id: Annotated[int, Path(ge=1, le=100, description="Enter User ID", example="10")]) -> dict:
     return {'message': f'Вы вошли как пользователь № {user_id}'}
 
 
