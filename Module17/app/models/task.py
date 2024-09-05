@@ -1,7 +1,8 @@
-from Module17.app.backend.db import Base
+# from Module17.app.backend.db import Base
+from app.backend.db import Base
 from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
-from Module17.app.models.user import User
+# from Module17.app.models.user import User
 
 
 # ForeignKey -указатель, позволяет указать на какую-то другую ячейку и произвести взаимосвязь между таблицами
