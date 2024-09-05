@@ -14,6 +14,7 @@ app.include_router(user.router)
 app.include_router(task.router)
 
 
+
 '''
 Задача "Основные маршруты":
 Необходимо создать маршруты и написать Pydantic модели для дальнейшей работы.

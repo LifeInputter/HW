@@ -12,3 +12,4 @@ SessionLocal = sessionmaker(bind=engine)
 # создаем класс будуще БД
 class Base(DeclarativeBase):
     pass
+
