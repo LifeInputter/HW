@@ -9,7 +9,8 @@ from app.backend.db_depends import get_db
 # Аннотации, Модели БД и Pydantic
 from typing import Annotated
 
-from app.models import User
+from app.models.user import User
+from app.models.task import Task
 from app.schemas import CreateUser, UpdateUser
 
 # Функции работы с записями
@@ -37,6 +38,25 @@ async def get_user_by_id(db: Annotated[Session, Depends(get_db)], user_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User was not found"
         )
+
+
+@router.get('/user_id/tasks')
+async def task_by_user_id(db: Annotated[Session, Depends(get_db)], user_id: int):
+    user = db.scalar(select(User).where(User.id == user_id))
+    if user is not None:
+        return user
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User was not found"
+        )
+    db.execute(select(Task).where(User.id == user_id))
+
+    db.commit()
+    return {
+        'status_code': status.HTTP_201_CREATED,
+        'transaction': "Successful"
+    }
 
 
 @router.post('/create')
@@ -83,6 +103,7 @@ async def delete_user(db: Annotated[Session, Depends(get_db)], user_id: int):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User was not found"
         )
+    db.execute(delete(Task).where(Task.user_id == user_id))
     db.execute(delete(User).where(User.id == user_id))
 
     db.commit()
