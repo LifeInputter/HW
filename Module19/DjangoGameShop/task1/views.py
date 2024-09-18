@@ -120,7 +120,7 @@ def sign_up_by_django(request):
             if username not in usernames and password == repeat_password and int(age) >= 18:
                 Buyer.objects.create(name=username, balance=0, age=age)
                 context = {'username': username}
-                return render(request, 'registration_complete.html', context), HttpResponse(f'Приветствуем, {username}!')
+                return render(request, 'registration_complete.html')
               # return HttpResponse(f'Приветствуем, {username}!')
 
             elif username in usernames:
@@ -144,5 +144,5 @@ def sign_up_by_django(request):
 
     else:
         form = UserRegister()
-        context = {'info': info, 'form': form}
-
+    context = {'info': info, 'form': form}
+    return render(request, 'registration_page.html', context)
