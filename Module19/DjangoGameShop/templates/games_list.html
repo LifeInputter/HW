@@ -1,0 +1,16 @@
+{% extends "menu.html" %}
+
+{% block games %}
+<body bgcolor="d7d7d7">
+ <h2>{{best_games}}</h2>
+<!--    {{ block.super }}-->
+<!--    <a href="http://127.0.0.1:8000/platform/"><button><h4>Вернуться обратно</h4></button></a>-->
+    <ul>
+        {%for game in games%}
+        <li><p>{{game.title}} | {{game.description}}. Стоимость: {{game.cost}} <button>{{buy}}</button></p></li>
+        {%endfor%}
+    </ul>
+        <button><a href="/platform">{{back}} </a><h4>Вернуться обратно</h4></button>
+{% endblock %}
+
+</body>

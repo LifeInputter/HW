@@ -4,6 +4,7 @@ from django.utils.timezone import timezone
 
 # Create your models here.
 class Buyer(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=100)
     balance = models.DecimalField(max_digits=10, decimal_places=2)
     age = models.IntegerField(default=18)
@@ -13,6 +14,7 @@ class Buyer(models.Model):
 
 
 class Game(models.Model):
+    objects = models.Manager()
     title = models.CharField(max_length=250)  # название игры
     cost = models.DecimalField(max_digits=10, decimal_places=2)  # цена(DecimalField)
     size = models.DecimalField(max_digits=10, decimal_places=2)  # описание(неограниченное кол-во текста)
