@@ -24,3 +24,14 @@ class Game(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Phones(models.Model):
+    objects = models.Manager()
+    title = models.CharField(max_length=200)
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField(db_default=True)
+    year_of_release = models.IntegerField(default=None)
+
+    def __str__(self):
+        return self.title

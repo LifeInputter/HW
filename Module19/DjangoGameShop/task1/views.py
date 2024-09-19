@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UserRegister
-from .models import Buyer, Game
+from .models import Buyer, Game, Phones
 from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 
@@ -35,12 +35,14 @@ def games(request):
 
 def phones(request):
     best_choice = "Список лучших смартфонов 2024:"
-    phones_lst = ["Iphone 15 Pro", "Galaxy S24 Ultra", "Honor Magic 7"]
+    phones_lst = ["Iphone 15 Pro", "Galaxy S24 Ultra", "Honor Magic 7 Pro"]
     buy = "Купить"
+    phones = Phones.objects.all()
     context = {
         'best_choice': best_choice,
         'phones_lst': phones_lst,
-        'buy': buy
+        'buy': buy,
+        'phones': phones
     }
     return render(request, 'phones.html', context)
 

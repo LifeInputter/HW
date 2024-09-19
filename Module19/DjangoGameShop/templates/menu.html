@@ -45,9 +45,9 @@
          {% block content %}
          <ul>
          <h2>{{best_choice}}</h2>
-             <h3>{% for i in phones_lst %}
-                 <li>{{ i|title }}  <button>{{buy}}</button></li>
-                 {% endfor %}</h3>
+<!--             <h4>{% for phone in phones_lst %}-->
+<!--                 <li>{{ phone.title }} - {{ phone.description }} (Стоимость: {{ phone.cost }}) <button>{{buy}}</button></li>-->
+<!--                 {% endfor %}</h4>-->
          </ul>
          {% endblock %}
      </content>
