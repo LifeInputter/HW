@@ -64,7 +64,9 @@ ROOT_URLCONF = 'UrbanDjango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates/fifth_task'],
+        'DIRS': [
+            BASE_DIR / 'templates/fourth_task', BASE_DIR / 'templates/fifth_task'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,11 +85,16 @@ WSGI_APPLICATION = 'UrbanDjango.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+'default': {
+'ENGINE': 'django.db.backends.postgresql_psycopg2',
+'NAME': 'TestDB',
+'USER': 'postgres',
+'PASSWORD': 'admin',
+'HOST': 'localhost',
+'PORT': '5432',
 }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
