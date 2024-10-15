@@ -4,11 +4,12 @@ import datetime
 def read_info(name):
     all_data = []
     with open(name) as file:
-        for line in file:
-            line = file.readline()
-            all_data.append(line)
-            if not line:
-                break
+        while True:
+            for line in file:
+                if not line:
+                    break
+                else: all_data.append(line)
+                return all_data
 
 
 filenames = [f'./file {number}.txt' for number in range(1, 5)]
@@ -20,6 +21,7 @@ filenames = [f'./file {number}.txt' for number in range(1, 5)]
 # end = datetime.datetime.now()
 # print(f'{end - start} (линейный)')
 
+
 # Многопроцессный
 if __name__ == '__main__':
     start = datetime.datetime.now()
@@ -28,8 +30,9 @@ if __name__ == '__main__':
     end = datetime.datetime.now()
     print(f'{end - start} (многопроцессный)')
 
-# results: 0:00:08.896987 (линейный); 0:00:04.599295 (многопроцессный)
-
+# results:
+#0:00:00.417001 (линейный)
+#0:00:00.199831 (многопроцессный)
 
 '''
 Задача "Многопроцессное считывание":
